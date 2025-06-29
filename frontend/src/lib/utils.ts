@@ -1,11 +1,10 @@
+import { Language } from '@/store/reviewStore';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export type Language = 'javascript' | 'typescript' | 'python';
 
 export const CODE_SNIPPETS: Record<Language, string> = {
   javascript: `\nfunction greet(name) {\n\tconsole.log("Hello, " + name + "!");\n}\n\ngreet("Alex");\n`,

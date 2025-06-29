@@ -2,12 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Language } from '@/store/reviewStore';
 import { useState } from 'react';
 
 interface ReviewHistoryItem {
   id: string;
   title: string;
-  language: string;
+  language: Language;
   timestamp: string;
 }
 
@@ -15,19 +16,19 @@ const dummyHistory: ReviewHistoryItem[] = [
   {
     id: '1',
     title: 'React Component Optimization',
-    language: 'JavaScript',
+    language: 'javascript',
     timestamp: '2 hours ago',
   },
   {
     id: '2',
     title: 'Python Data Processing',
-    language: 'Python',
+    language: 'python',
     timestamp: '1 day ago',
   },
   {
     id: '4',
     title: 'TypeScript Interface Design',
-    language: 'TypeScript',
+    language: 'typescript',
     timestamp: '3 days ago',
   },
 ];
@@ -37,19 +38,17 @@ export default function History() {
 
   const handleItemClick = (item: ReviewHistoryItem) => {
     setSelectedItem(item.id);
-    console.log('Selected review:', item.title);
   };
 
   const handleNewReview = () => {
     setSelectedItem(null);
-    // Logic to start a new review can be added here
   };
 
-  const getLanguageColor = (language: string) => {
-    const colors: Record<string, string> = {
-      JavaScript: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
-      TypeScript: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-      Python: 'bg-green-500/10 text-green-400 border border-green-500/20',
+  const getLanguageColor = (language: Language) => {
+    const colors: Record<Language, string> = {
+      javascript: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+      typescript: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
+      python: 'bg-green-500/10 text-green-400 border border-green-500/20',
     };
     return colors[language] || 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
   };

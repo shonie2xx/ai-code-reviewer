@@ -1,16 +1,19 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
 
 import { Editor } from '@monaco-editor/react';
-import { CODE_SNIPPETS, getCodeLength, Language } from '@/lib/utils';
+import { CODE_SNIPPETS, getCodeLength } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { CharDisplay, LanguageSelector } from './CodeEditorComponents';
+import { Language, useReviewStore } from '@/store/reviewStore';
 
 export default function CodeEditor() {
-  const [language, setLanguage] = useState<Language>('typescript');
-  const [code, setCode] = useState<string>(CODE_SNIPPETS[language]);
+  const code = useReviewStore((state) => state.code);
+  const language = useReviewStore((state) => state.language);
+  const isReviewing = useReviewStore((state) => state.isReviewing);
+  const setCode = useReviewStore((state) => state.setCode);
+  const setLanguage = useReviewStore((state) => state.setLanguage);
 
   const onLanguageChange = (lang: Language) => {
     setLanguage(lang);
@@ -21,7 +24,18 @@ export default function CodeEditor() {
   const hasValidCode = effectiveCodeLength >= 30 && effectiveCodeLength <= 500;
 
   const handleClear = () => {
+    if (isReviewing) {
+      alert('Cannot clear code while reviewing. Please wait for the review to finish.');
+      return;
+    }
     setCode('');
+  };
+
+  const handleSubmit = () => {
+    if (!hasValidCode) {
+      alert('Code must be between 30 and 500 characters.');
+    }
+    // handleReview();
   };
 
   return (
@@ -34,9 +48,9 @@ export default function CodeEditor() {
             <Button
               className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
               disabled={!hasValidCode}
+              onClick={handleSubmit}
             >
-              {/* {isReviewing ? 'Reviewing...' : 'Run Review'} */}
-              Run Review
+              {isReviewing ? 'Reviewing...' : 'Run Review'}
             </Button>
             <Button
               onClick={handleClear}
@@ -59,6 +73,7 @@ export default function CodeEditor() {
           options={{
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
+            readOnly: isReviewing,
           }}
         />
       </div>
