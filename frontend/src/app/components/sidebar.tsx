@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { useState } from 'react';
 
 interface ReviewHistoryItem {
@@ -55,10 +55,10 @@ export function Sidebar() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#111111]">
-      <div className="p-6 border-b border-gray-800">
+    <div className="h-full flex flex-col bg-[#1a1a1a]">
+      <div className="p-6 border-b border-gray-800 ">
         <Button
-          className="w-full bg-gray-800 hover:bg-gray-700 text-white border-gray-700 hover:border-gray-600 transition-all duration-200"
+          className="w-full bg-gray-800 hover:cursor-pointer hover:bg-gray-700 text-white border-gray-700 hover:border-gray-600 transition-all duration-200"
           variant="outline"
           onClick={() => handleNewReview()}
         >

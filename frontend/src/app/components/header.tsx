@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/components/ui/button';
 
 // import { Button } from '@/components/ui/button';
 // import { Play, Trash2 } from 'lucide-react';
@@ -15,7 +15,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-[#0a0a0a] border-b border-gray-800 px-6 py-4">
+    <header className="bg-[#1a1a1a] border-b border-gray-800 px-6 py-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Code Review Assistant</h1>
