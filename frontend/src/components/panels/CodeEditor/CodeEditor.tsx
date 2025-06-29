@@ -4,11 +4,11 @@ import type React from 'react';
 import { useState } from 'react';
 
 import { Editor } from '@monaco-editor/react';
-import { CODE_SNIPPETS, getCodeLength, Language } from './utils';
+import { CODE_SNIPPETS, getCodeLength, Language } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { LanguageSelector, CharDisplay } from './common/code-editor-components';
+import { CharDisplay, LanguageSelector } from './CodeEditorComponents';
 
-export function CodeEditor() {
+export default function CodeEditor() {
   const [language, setLanguage] = useState<Language>('typescript');
   const [code, setCode] = useState<string>(CODE_SNIPPETS[language]);
 

@@ -1,6 +1,6 @@
 'use client';
 
-export function Header() {
+export default function Header() {
   return (
     <header className="bg-[#1a1a1a] border-b border-gray-800 px-6 py-4">
       <div className="flex items-center justify-between">

@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CODE_SNIPPETS } from '../utils';
+import { CODE_SNIPPETS } from '@/lib/utils';
 
 export function CharDisplay({ count }: { count: number }) {
   return (

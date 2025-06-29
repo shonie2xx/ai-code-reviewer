@@ -32,7 +32,7 @@ const dummyHistory: ReviewHistoryItem[] = [
   },
 ];
 
-export function Sidebar() {
+export default function History() {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const handleItemClick = (item: ReviewHistoryItem) => {
