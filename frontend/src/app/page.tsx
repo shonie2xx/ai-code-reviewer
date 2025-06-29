@@ -1,7 +1,7 @@
 import { CodeEditor } from './components/code-editor';
 import { FeedbackPanel } from './components/feedback-panel';
-import { Header } from './components/header';
-import { Sidebar } from './components/sidebar';
+import { Header } from './components/header-panel';
+import { Sidebar } from './components/history-panel';
 
 export default function Home() {
   return (
