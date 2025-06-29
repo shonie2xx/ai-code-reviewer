@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/app/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 
 interface ReviewHistoryItem {
@@ -32,7 +32,7 @@ const dummyHistory: ReviewHistoryItem[] = [
   },
 ];
 
-export function Sidebar() {
+export default function History() {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const handleItemClick = (item: ReviewHistoryItem) => {

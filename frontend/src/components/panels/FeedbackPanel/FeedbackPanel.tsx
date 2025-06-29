@@ -1,4 +1,4 @@
-export function FeedbackPanel() {
+export default function FeedbackPanel() {
   return (
     <div className="h-full flex flex-col p-6 bg-[#1a1a1a]">
       <div className="flex items-center gap-2 mb-6">
