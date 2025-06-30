@@ -4,6 +4,7 @@ import { create } from 'zustand';
 export type Language = 'typescript' | 'javascript' | 'python';
 
 interface HistoryItem {
+  id: string;
   code: string;
   review: string;
   language: Language;

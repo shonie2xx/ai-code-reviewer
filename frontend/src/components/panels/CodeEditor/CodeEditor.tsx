@@ -7,6 +7,7 @@ import { CODE_SNIPPETS, getCodeLength } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { CharDisplay, LanguageSelector } from './CodeEditorComponents';
 import { Language, useReviewStore } from '@/store/reviewStore';
+import { reviewCode } from '@/lib/api';
 
 export default function CodeEditor() {
   const code = useReviewStore((state) => state.code);
@@ -31,15 +32,27 @@ export default function CodeEditor() {
     setCode('');
   };
 
-  const handleSubmit = () => {
-    if (!hasValidCode) {
-      alert('Code must be between 30 and 500 characters.');
+  const handleReview = async () => {
+    useReviewStore.getState().setIsReviewing(true);
+    const code = useReviewStore.getState().code;
+    const language = useReviewStore.getState().language;
+    try {
+      // const data = await reviewCode(code, language);
+      useReviewStore.getState().setReview('AI feedback');
+      // useReviewStore.getState().addToHistory({
+      //   id: data.result.timestamp,
+      //   code,
+      //   review: data.result,
+      //   language,
+      //   timestamp: new Date().toISOString(),
+      // });
+    } finally {
+      useReviewStore.getState().setIsReviewing(false);
     }
-    // handleReview();
   };
 
   return (
-    <div className="flex flex-col w-full h-full p-6 gap-4">
+    <div className="flex flex-col w-full h-full gap-4">
       <div className="flex items-center justify-between mb-4">
         <LanguageSelector onValueChange={onLanguageChange} defaultValue={language} />
         <div className="flex items-center gap-4">
@@ -48,7 +61,7 @@ export default function CodeEditor() {
             <Button
               className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
               disabled={!hasValidCode}
-              onClick={handleSubmit}
+              onClick={handleReview}
             >
               {isReviewing ? 'Reviewing...' : 'Run Review'}
             </Button>
