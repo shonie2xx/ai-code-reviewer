@@ -1,29 +1,16 @@
-import Fastify from 'fastify';
-import { PrismaClient } from '@prisma/client';
+import Fastify, { fastify } from 'fastify';
+import { createContext } from './context';
+import { appRouter } from './trpc';
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 
 const server = Fastify({
   logger: true,
 });
 
-const prisma = new PrismaClient();
-
-server.get('/', async function handler(request, reply) {
-  return { hello: 'world' };
+server.register(fastifyTRPCPlugin, {
+  prefix: '/trpc',
+  trpcOptions: { router: appRouter, createContext },
 });
-
-server.get('/submissions', async (request, reply) => {});
-
-// server.register(fastifyTRPCPlugin, {
-//   prefix: '/trpc',
-//   trpcOptions: {
-//     router: appRouter,
-//     createContext,
-//     onError({ path, error }) {
-//       // report to error monitoring
-//       console.error(`Error in tRPC handler on path '${path}':`, error);
-//     },
-//   } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions'],
-// });
 
 (async function () {
   try {

@@ -16,4 +16,5 @@ model Submission {
   language  String
   feedback  String
   createdAt DateTime @default(now())
+  userId    String
 }
