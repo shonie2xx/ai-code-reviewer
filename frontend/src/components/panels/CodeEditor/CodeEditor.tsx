@@ -3,11 +3,10 @@
 import type React from 'react';
 
 import { Editor } from '@monaco-editor/react';
-import { CODE_SNIPPETS, getCodeLength } from '@/lib/utils';
+import { CODE_SNIPPETS, getCodeLength } from '@/utils/utils';
 import { Button } from '@/components/ui/button';
 import { CharDisplay, LanguageSelector } from './CodeEditorComponents';
 import { Language, useReviewStore } from '@/store/reviewStore';
-import { reviewCode } from '@/lib/api';
 
 export default function CodeEditor() {
   const code = useReviewStore((state) => state.code);
@@ -32,23 +31,41 @@ export default function CodeEditor() {
     setCode('');
   };
 
-  const handleReview = async () => {
-    useReviewStore.getState().setIsReviewing(true);
-    const code = useReviewStore.getState().code;
-    const language = useReviewStore.getState().language;
-    try {
-      // const data = await reviewCode(code, language);
-      useReviewStore.getState().setReview('AI feedback');
-      // useReviewStore.getState().addToHistory({
-      //   id: data.result.timestamp,
-      //   code,
-      //   review: data.result,
-      //   language,
-      //   timestamp: new Date().toISOString(),
-      // });
-    } finally {
-      useReviewStore.getState().setIsReviewing(false);
+  const handleGetFeedback = async () => {
+    useReviewStore.setState({ isReviewing: true });
+    const response = await fetch('http://localhost:3001/getLiveFeedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: 'b3b8c9e2-1a2b-4c3d-9e4f-5a6b7c8d9e0f', // hardcoded for now
+        code,
+        language,
+        specialty: 'Technical', // Replace with actual specialty logic if needed
+      }),
+    });
+
+    if (!response.body) {
+      useReviewStore.setState({ isReviewing: false });
+      alert('Failed to get feedback. Please try again later.');
+      return;
     }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: isDone } = await reader.read();
+      done = isDone;
+      if (value) {
+        const text = decoder.decode(value);
+        console.log('value', text);
+        useReviewStore.getState().setReview((prev) => prev + text);
+      }
+    }
+    useReviewStore.setState({ isReviewing: false });
   };
 
   return (
@@ -61,9 +78,9 @@ export default function CodeEditor() {
             <Button
               className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
               disabled={!hasValidCode}
-              onClick={handleReview}
+              onClick={handleGetFeedback}
             >
-              {isReviewing ? 'Reviewing...' : 'Run Review'}
+              {isReviewing ? 'Reviewing...' : 'Get Feedback'}
             </Button>
             <Button
               onClick={handleClear}

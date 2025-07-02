@@ -1,4 +1,4 @@
-import { CODE_SNIPPETS } from '@/lib/utils';
+import { CODE_SNIPPETS } from '@/utils/utils';
 import { create } from 'zustand';
 
 export type Language = 'typescript' | 'javascript' | 'python';
@@ -15,7 +15,7 @@ interface ReviewState {
   code: string;
   language: Language;
   isReviewing: boolean;
-  review: string | null;
+  review: string;
   history: HistoryItem[];
   setCode: (code: string) => void;
   setLanguage: (language: Language) => void;
@@ -28,7 +28,7 @@ export const useReviewStore = create<ReviewState>((set) => ({
   code: CODE_SNIPPETS.typescript,
   language: 'typescript',
   isReviewing: false,
-  review: null,
+  review: '',
   history: [],
   setCode: (code) => set({ code }),
   setLanguage: (language) => set({ language }),
