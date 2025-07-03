@@ -21,7 +21,7 @@ export async function liveFeedbackHandler(request: FastifyRequest, reply: Fastif
 
   const { code, language, specialty } = parseResult.data;
 
-  reply.raw.setHeader('Content-Type', 'application/octet-stream');
+  reply.raw.setHeader('Content-Type', 'text/plain; charset=utf-8');
   reply.raw.setHeader('Transfer-Encoding', 'chunked');
   reply.raw.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   reply.raw.setHeader('Access-Control-Allow-Credentials', 'true');

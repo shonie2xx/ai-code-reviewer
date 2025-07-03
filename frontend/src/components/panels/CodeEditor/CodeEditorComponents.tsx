@@ -6,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CODE_SNIPPETS } from '@/utils/utils';
 
 export function CharDisplay({ count }: { count: number }) {
   return (
@@ -28,21 +27,34 @@ export function CharDisplay({ count }: { count: number }) {
   );
 }
 
-export function LanguageSelector(props: React.ComponentProps<typeof Select>) {
+export function DropDown({
+  nativeProps,
+  items,
+  title,
+}: {
+  nativeProps: React.ComponentProps<typeof Select>;
+  items: string[];
+  title?: string;
+}) {
   return (
-    <Select {...props}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a language" />
-      </SelectTrigger>
-      <SelectContent className="bg-black">
-        <SelectGroup>
-          {Object.keys(CODE_SNIPPETS).map((lang) => (
-            <SelectItem key={lang} value={lang}>
-              {lang.charAt(0).toUpperCase() + lang.slice(1)}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <div className="flex flex-col gap-1">
+      {title && <p>{title}</p>}
+      <div>
+        <Select {...nativeProps}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-black">
+            <SelectGroup>
+              {items.map((item, index) => (
+                <SelectItem key={index} value={item}>
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
   );
 }
