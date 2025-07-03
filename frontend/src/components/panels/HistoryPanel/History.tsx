@@ -2,46 +2,34 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Language } from '@/store/reviewStore';
-import { useState } from 'react';
+import { Language, useReviewStore } from '@/store/reviewStore';
+import { useEffect, useState } from 'react';
 
-interface ReviewHistoryItem {
+export interface ReviewHistoryItem {
+  code: string;
+  language: string;
+  specialty: string;
   id: string;
-  title: string;
-  language: Language;
-  timestamp: string;
+  feedback: string;
+  createdAt: string;
 }
-
-const dummyHistory: ReviewHistoryItem[] = [
-  {
-    id: '1',
-    title: 'React Component Optimization',
-    language: 'javascript',
-    timestamp: '2 hours ago',
-  },
-  {
-    id: '2',
-    title: 'Python Data Processing',
-    language: 'python',
-    timestamp: '1 day ago',
-  },
-  {
-    id: '4',
-    title: 'TypeScript Interface Design',
-    language: 'typescript',
-    timestamp: '3 days ago',
-  },
-];
 
 export default function History() {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const { history, fetchReviewHistory, loadHistoryItem, clearReview } = useReviewStore();
+
+  useEffect(() => {
+    fetchReviewHistory();
+  }, []);
 
   const handleItemClick = (item: ReviewHistoryItem) => {
     setSelectedItem(item.id);
+    loadHistoryItem(item.id);
   };
 
   const handleNewReview = () => {
     setSelectedItem(null);
+    clearReview();
   };
 
   const getLanguageColor = (language: Language) => {
@@ -67,7 +55,7 @@ export default function History() {
 
       <div className="flex-1 bg-[#1a1a1a]">
         <div className="p-4 space-y-2">
-          {dummyHistory.map((item) => {
+          {history.map((item) => {
             return (
               <Card
                 key={item.id}
@@ -81,20 +69,20 @@ export default function History() {
                 <CardHeader className="p-0">
                   <div className="flex items-center">
                     <CardTitle className="font-medium text-white text-sm line-clamp-1 p-0 m-0">
-                      {item.title}
+                      {item.feedback.slice(0, 20)}...
                     </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="flex p-0">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${getLanguageColor(
-                      item.language
+                      (item.language as Language) || 'javascript'
                     )}`}
                   >
                     {item.language}
                   </span>
                 </CardContent>
-                <CardFooter className="flex p-0 text-xs text-gray-400">{item.timestamp}</CardFooter>
+                <CardFooter className="flex p-0 text-xs text-gray-400">{item.createdAt}</CardFooter>
               </Card>
             );
           })}

@@ -48,7 +48,7 @@ export default function CodeEditor() {
         <DropDown
           nativeProps={{
             onValueChange: handleChangeLanguage,
-            defaultValue: language,
+            value: language,
           }}
           items={Object.keys(CODE_SNIPPETS)}
           title="Language"
@@ -56,7 +56,7 @@ export default function CodeEditor() {
         <DropDown
           nativeProps={{
             onValueChange: handleChangeSpecialty,
-            defaultValue: specialty,
+            value: specialty,
           }}
           items={SPECIALISTS}
           title="Specialty"

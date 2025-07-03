@@ -5,6 +5,9 @@ export type Language = 'typescript' | 'javascript' | 'python';
 export type Specialty = 'Security Specialist';
 
 import { devtools } from 'zustand/middleware';
+import { useUserStore } from './userStore';
+import { trpc } from '@/utils/trpcClient';
+import { ReviewHistoryItem } from '@/components/panels/HistoryPanel/History';
 
 interface ReviewState {
   review: string;
@@ -13,6 +16,7 @@ interface ReviewState {
   code: string;
   language: Language;
   specialty: Specialty;
+  history: ReviewHistoryItem[];
 
   abortController: AbortController | null;
 
@@ -24,8 +28,9 @@ interface ReviewState {
   appendReview: (chunk: string) => void;
   clearReview: () => void;
   setIsReviewing: (isReviewing: boolean) => void;
-  startStreaming: () => void;
   streamFeedback: (apiUrl?: string) => Promise<void>;
+  fetchReviewHistory: () => Promise<void>;
+  loadHistoryItem: (itemId: string) => void;
 }
 
 export const useReviewStore = create<ReviewState>()(
@@ -36,21 +41,25 @@ export const useReviewStore = create<ReviewState>()(
       code: CODE_SNIPPETS.typescript, // Default code snippet
       language: 'typescript',
       specialty: 'Security Specialist',
+      history: [],
 
       setCode: (code) => set({ code }),
       setLanguage: (language) => set({ language }),
       setSpecialty: (specialty) => set({ specialty }),
       setReview: (review) => set({ review }),
       appendReview: (chunk) => set((state) => ({ review: state.review + chunk })),
-      clearReview: () => set({ review: '' }),
+      clearReview: () =>
+        set({
+          review: '',
+          code: CODE_SNIPPETS.typescript,
+          language: 'typescript',
+          specialty: 'Security Specialist',
+        }),
       setIsReviewing: (isReviewing) => set({ isReviewing }),
-
-      startStreaming: () => {
-        set({ isReviewing: true });
-      },
 
       streamFeedback: async (apiUrl = 'http://localhost:3001/getLiveFeedback') => {
         const { code, language, specialty } = get();
+        const userId = useUserStore.getState().getUserId();
 
         if (!code.trim()) {
           alert('Please enter enough code to review.');
@@ -69,7 +78,7 @@ export const useReviewStore = create<ReviewState>()(
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              userId: 'b3b8c9e2-1a2b-4c3d-9e4f-5a6b7c8d9e0f',
+              userId,
               code,
               language,
               specialty,
@@ -122,6 +131,60 @@ export const useReviewStore = create<ReviewState>()(
           }
         } finally {
           set({ isReviewing: false, abortController: null });
+          get().fetchReviewHistory();
+        }
+      },
+
+      fetchReviewHistory: async () => {
+        const userId = useUserStore.getState().getUserId();
+        if (!userId) {
+          alert('User ID is not available');
+          return;
+        }
+
+        try {
+          const response = await trpc.getSubmissions.query({ userId });
+
+          // TODO could reuse same function as in streamFeedback
+          const normalizedResponse = response.map((item) => {
+            const lines = item.feedback.split('\n');
+            let normalizedFeedback = '';
+            for (const line of lines) {
+              if (line.startsWith('0:')) {
+                try {
+                  const jsonStr = line.substring(2);
+                  const data = JSON.parse(jsonStr);
+                  normalizedFeedback += data;
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (e) {
+                  if (line.trim()) {
+                    normalizedFeedback += line;
+                  }
+                }
+              }
+            }
+
+            return {
+              ...item,
+              feedback: normalizedFeedback.trim(),
+            };
+          });
+
+          set({ history: normalizedResponse });
+        } catch (error) {
+          console.error('Error fetching review history:', error);
+        }
+      },
+
+      loadHistoryItem: (itemId: string) => {
+        const historyItem = get().history.find((item) => item.id === itemId);
+        if (historyItem) {
+          set({
+            review: historyItem.feedback,
+            code: historyItem.code,
+            language: historyItem.language as Language,
+            specialty: historyItem.specialty as Specialty,
+          });
         }
       },
     }),
