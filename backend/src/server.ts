@@ -22,8 +22,10 @@ async function startServer() {
     trpcOptions: { router: appRouter, createContext },
   });
 
+  const port = process.env.PORT || 3001;
+  const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
   try {
-    await server.listen({ port: 3001 });
+    await server.listen({ port: Number(port), host });
   } catch (err) {
     server.log.error(err);
     process.exit(1);

@@ -1,11 +1,12 @@
 import z from 'zod';
-import { CODE_CHAR_MAX, CODE_CHAR_MIN } from '../../common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const CODE_CHAR_MAX = 500;
+const CODE_CHAR_MIN = 30;
 
 const schema = z.object({
   userId: z.string().uuid(),
@@ -23,9 +24,12 @@ export async function liveFeedbackHandler(request: FastifyRequest, reply: Fastif
   }
 
   const { code, language, specialty, userId } = parseResult.data;
+
+  const allowedOrigins = process.env.FRONTEND_URL || 'http://localhost:3000';
+
   reply.raw.setHeader('Content-Type', 'text/plain; charset=utf-8');
   reply.raw.setHeader('Transfer-Encoding', 'chunked');
-  reply.raw.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  reply.raw.setHeader('Access-Control-Allow-Origin', allowedOrigins);
   reply.raw.setHeader('Access-Control-Allow-Credentials', 'true');
   reply.raw.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

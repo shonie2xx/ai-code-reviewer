@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "type": "commonjs",
-  "main": "./dist/server.js",
+  "engines": {
+    "node": "20.x"
+  },
+  "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
+    "build": "tsc && npx prisma generate",
+    "start": "npx prisma migrate deploy && node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
   },

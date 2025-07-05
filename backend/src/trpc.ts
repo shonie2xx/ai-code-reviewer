@@ -1,19 +1,17 @@
-import { PrismaClient } from '@prisma/client';
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
-import dotenv from 'dotenv';
+import { createContext } from './context';
 
-dotenv.config();
-const prisma = new PrismaClient();
-const t = initTRPC.create();
+const t = initTRPC.context<typeof createContext>().create();
 
 export const appRouter = t.router({
   getSubmissions: t.procedure
     .input(z.object({ userId: z.string().uuid() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { userId } = input;
-      const submissions = await prisma.submission.findMany({
+      const submissions = await ctx.prisma.submission.findMany({
         where: { userId },
+        orderBy: { createdAt: 'desc' },
       });
       return submissions;
     }),
