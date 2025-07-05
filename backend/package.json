@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc && npx prisma generate",
+    "prestart": "npm run build",
     "start": "npx prisma db push && node dist/server.js"
   },
   "keywords": [],

@@ -29,7 +29,7 @@ async function startServer() {
   }
 
   await fastify.register(cors, {
-    origin: true,
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
   });
 
@@ -45,6 +45,7 @@ async function startServer() {
 
   const port = process.env.PORT || 3001;
   try {
+    fastify.log.info(`Server is starting on port ${process.env.PORT}`);
     await fastify.listen({ port: Number(port), host: process.env.HOST || '0.0.0.0' });
   } catch (err) {
     fastify.log.error(err);

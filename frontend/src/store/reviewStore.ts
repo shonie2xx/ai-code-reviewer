@@ -57,7 +57,7 @@ export const useReviewStore = create<ReviewState>()(
         }),
       setIsReviewing: (isReviewing) => set({ isReviewing }),
 
-      streamFeedback: async (apiUrl = 'http://localhost:3000/api/getLiveFeedback') => {
+      streamFeedback: async () => {
         const { code, language, specialty } = get();
         const userId = useUserStore.getState().getUserId();
 
@@ -73,7 +73,7 @@ export const useReviewStore = create<ReviewState>()(
 
         try {
           console.log('Starting feedback stream with:', { code, language });
-          const response = await fetch('/api/getLiveFeedback', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/getLiveFeedback`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -85,9 +85,7 @@ export const useReviewStore = create<ReviewState>()(
               specialty,
             }),
           });
-          console.log('✅ Fetch completed successfully');
-          console.log('Response status:', response.status);
-          console.log('Response ok:', response.ok);
+
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -105,9 +103,23 @@ export const useReviewStore = create<ReviewState>()(
             if (done) break;
 
             const chunk = decoder.decode(value, { stream: true });
-            console.log('Received chunk:', chunk);
-            if (chunk.trim()) {
-              get().appendReview(chunk);
+
+            const lines = chunk.split('\n');
+
+            for (const line of lines) {
+              if (line.startsWith('0:')) {
+                try {
+                  const jsonStr = line.substring(2);
+                  const data = JSON.parse(jsonStr);
+                  get().appendReview(data);
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (e) {
+                  // If parsing fails, treat as raw text
+                  if (line.trim()) {
+                    get().appendReview(line);
+                  }
+                }
+              }
             }
           }
         } catch (error) {
