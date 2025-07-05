@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
-export async function createContext() {
+export async function createContext(prisma: PrismaClient) {
   return { prisma };
 }
 export type Context = Awaited<ReturnType<typeof createContext>>;

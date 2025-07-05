@@ -8,11 +8,9 @@
   },
   "main": "dist/server.js",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc && npx prisma generate",
-    "start": "npx prisma migrate deploy && node dist/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "start": "npx prisma db push && node dist/server.js"
   },
   "keywords": [],
   "author": "",

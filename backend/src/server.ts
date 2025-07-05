@@ -1,33 +1,53 @@
+import 'dotenv/config'; // Initialize dotenv
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { createContext } from './context';
 import { appRouter } from './trpc';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { liveFeedbackHandler } from './liveFeedbackHandler';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 async function startServer() {
-  const server = Fastify({
+  const fastify = Fastify({
     logger: true,
   });
 
-  await server.register(cors, {
+  try {
+    await prisma.$connect();
+    fastify.log.info('Database connected successfully');
+  } catch (error) {
+    fastify.log.error('Database connection failed:', error);
+    process.exit(1);
+  }
+
+  await fastify.register(cors, {
     origin: true,
     credentials: true,
   });
 
-  server.post('/getLiveFeedback', liveFeedbackHandler);
+  fastify.post('/getLiveFeedback', liveFeedbackHandler);
 
-  await server.register(fastifyTRPCPlugin, {
+  await fastify.register(fastifyTRPCPlugin, {
     prefix: '/trpc',
-    trpcOptions: { router: appRouter, createContext },
+    trpcOptions: {
+      router: appRouter,
+      createContext: () => createContext(prisma),
+    },
   });
 
   const port = process.env.PORT || 3001;
-  const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
   try {
-    await server.listen({ port: Number(port), host });
+    await fastify.listen({ port: Number(port), host: process.env.HOST || '0.0.0.0' });
   } catch (err) {
-    server.log.error(err);
+    fastify.log.error(err);
     process.exit(1);
   }
 }
