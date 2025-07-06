@@ -16,8 +16,13 @@ export default function Home() {
   const [showStartup, setShowStartup] = useState(!userId);
 
   useEffect(() => {
-    setShowStartup(!userId);
-  }, [userId]);
+    const storedUserId = useUserStore.getState().getUserId();
+    if (storedUserId) {
+      setUserId(storedUserId);
+      setShowStartup(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const uuidSchema = z.string().uuid();
 
