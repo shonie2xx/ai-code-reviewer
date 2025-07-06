@@ -42,13 +42,6 @@ export default function FeedbackPanel() {
           </div>
         </div>
       )}
-
-      <div className="mt-6 pt-4 border-t border-gray-700">
-        <div className="flex items-center justify-between text-xs text-gray-400">
-          <span>Ready for review</span>
-          <span>0 issues found</span>
-        </div>
-      </div>
     </div>
   );
 }
