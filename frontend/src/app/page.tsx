@@ -9,11 +9,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { useUserStore } from '@/store/userStore';
 import { z } from 'zod';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const { userId, setUserId } = useUserStore();
   const [showStartup, setShowStartup] = useState(!userId);
+
+  useEffect(() => {
+    setShowStartup(!userId);
+  }, [userId]);
 
   const uuidSchema = z.string().uuid();
 
