@@ -5,7 +5,10 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@shared/types/*": ["../packages/shared-types/src/*"]
+    }
   },
   "include": ["src/**/*.ts", "api/**/*.ts", "src/server.ts"]
 }
