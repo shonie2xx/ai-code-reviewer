@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run setup && next build",
-    "setup": "npx tsc --declaration --strict  --pretty ../backend/src/trpc --outDir generated/trpc-types --emitDeclarationOnly",
+    "setup": "cd ../backend && npx typescript --declaration --strict --pretty src/trpc --outDir ../frontend/generated/trpc-types --emitDeclarationOnly",
     "vercel-build": "npm run setup && next build",
     "start": "next start",
     "lint": "next lint"
