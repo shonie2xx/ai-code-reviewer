@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "setup && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup": "npx tsc --declaration --strict  --pretty ../backend/src/trpc --outDir generated/trpc-types --emitDeclarationOnly"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

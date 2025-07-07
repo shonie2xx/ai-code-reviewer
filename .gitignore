@@ -12,8 +12,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # Frontend / Backend specific
-/frontend/.next/
-/backend/node_modules/
-/frontend/node_modules/
-/frontend/.env.local
-/backend/.env
+apps/frontend/.next/
+apps/backend/node_modules/
+apps/frontend/node_modules/
+apps/frontend/.env.local
+apps/backend/.env
+apps/frontend/generated
