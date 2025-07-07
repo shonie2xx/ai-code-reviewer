@@ -17,4 +17,3 @@ apps/backend/node_modules/
 apps/frontend/node_modules/
 apps/frontend/.env.local
 apps/backend/.env
-apps/frontend/generated

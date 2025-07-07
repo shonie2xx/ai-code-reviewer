@@ -11,7 +11,8 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc && npx prisma generate",
     "prestart": "npm run build",
-    "start": "npx prisma db push && node dist/server.js"
+    "start": "npx prisma db push && node dist/server.js",
+    "setup": "npx tsc --declaration --strict --pretty src/trpc --outDir ../frontend/generated/trpc-types --emitDeclarationOnly"
   },
   "keywords": [],
   "author": "",

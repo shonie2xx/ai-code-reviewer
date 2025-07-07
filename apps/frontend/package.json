@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run setup && next build",
-    "setup": "cd ../backend && npx typescript --declaration --strict --pretty src/trpc --outDir ../frontend/generated/trpc-types --emitDeclarationOnly",
-    "vercel-build": "npm run setup && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
